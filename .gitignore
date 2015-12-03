@@ -6,3 +6,5 @@
 *.pdf
 *.csv
 *.gz
+*.sublime-project
+*.sublime-workspace
