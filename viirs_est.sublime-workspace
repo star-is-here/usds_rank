@@ -1,0 +1,1121 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"geo",
+				"geoid"
+			],
+			[
+				"acs",
+				"acs_summ/"
+			],
+			[
+				"red",
+				"redraw"
+			],
+			[
+				"this",
+				"thisweek"
+			],
+			[
+				"sc",
+				"script	Tag"
+			],
+			[
+				"appen",
+				"appendme"
+			],
+			[
+				"nvd_tim",
+				"nvd_timeline_five"
+			],
+			[
+				"nvd_",
+				"nvd_timeline"
+			],
+			[
+				"n",
+				"nvdcve-2.0-2008.xml"
+			],
+			[
+				"color",
+				"colorused"
+			],
+			[
+				"ne",
+				"network_2015.svg"
+			],
+			[
+				"my",
+				"myGraph"
+			],
+			[
+				"week",
+				"weeklynodes"
+			],
+			[
+				"sele",
+				"selectAll"
+			],
+			[
+				"remo",
+				"removeNode"
+			],
+			[
+				"set",
+				"setTimeout"
+			],
+			[
+				"add",
+				"addLink"
+			],
+			[
+				"softwa",
+				"software_schema"
+			],
+			[
+				"Sof",
+				"Software.json"
+			],
+			[
+				"nvd",
+				"nvdcve-2.0-2015.xml"
+			],
+			[
+				"vul",
+				"vuln_vector"
+			],
+			[
+				"csv",
+				"verbal_final.csv"
+			],
+			[
+				"all",
+				"all_businesses"
+			],
+			[
+				"Mu",
+				"MultiPoint"
+			],
+			[
+				"els",
+				"elsi_final"
+			],
+			[
+				"elsi",
+				"elsi_geocode"
+			],
+			[
+				"coo",
+				"coordinates"
+			],
+			[
+				"c",
+				"class	New Class"
+			],
+			[
+				"geoc",
+				"geocode_local"
+			],
+			[
+				"spl",
+				"split"
+			],
+			[
+				"url",
+				"urllib2"
+			],
+			[
+				"naics",
+				"naics_list"
+			],
+			[
+				"prop",
+				"properties"
+			],
+			[
+				"dpr",
+				"dprktopo"
+			],
+			[
+				"pk",
+				"pkgchk"
+			],
+			[
+				"functi",
+				"function"
+			],
+			[
+				"get",
+				"getwd"
+			],
+			[
+				"ke",
+				"keys"
+			],
+			[
+				"tex",
+				"text_content"
+			],
+			[
+				"text",
+				"text_coord"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "usds_rank.py",
+			"settings":
+			{
+				"buffer_size": 3836,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "acs_sas/eak_0001.sas",
+			"settings":
+			{
+				"buffer_size": 786,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "variables.json",
+			"settings":
+			{
+				"buffer_size": 11119433,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "acs_sas/eak_0074.sas",
+			"settings":
+			{
+				"buffer_size": 2768,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+		[
+			[
+				[
+					"Packages/Python/Python.sublime-build",
+					""
+				],
+				[
+					"Packages/Python/Python.sublime-build",
+					"Syntax Check"
+				],
+				[
+					"Packages/SublimeREPL/sublimerepl_build_system_hack.sublime-build",
+					""
+				]
+			],
+			[
+				"Packages/Python/Python.sublime-build",
+				""
+			]
+		]
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 324.0,
+		"last_filter": "ins",
+		"selected_items":
+		[
+			[
+				"ins",
+				"Package Control: Install Package"
+			],
+			[
+				"insta",
+				"Package Control: Install Package"
+			],
+			[
+				"prett",
+				"Pretty JSON: Format (Pretty Print) JSON"
+			],
+			[
+				"sor",
+				"Sort Lines"
+			],
+			[
+				"pytho",
+				"SublimeREPL: Python"
+			],
+			[
+				"remo",
+				"Package Control: Remove Package"
+			],
+			[
+				"pyth",
+				"SublimeREPL: Python"
+			],
+			[
+				"instal",
+				"Package Control: Install Package"
+			],
+			[
+				"sub",
+				"SublimeREPL: Python"
+			],
+			[
+				"colo",
+				"Colorsublime: Install Theme"
+			],
+			[
+				"color",
+				"Colorsublime: Browse Themes"
+			],
+			[
+				"packa",
+				"Package Control: Install Package"
+			],
+			[
+				"json",
+				"Pretty JSON: Format (Pretty Print) JSON"
+			],
+			[
+				"pre",
+				"Pretty JSON: Format (Pretty Print) JSON"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"compre",
+				"Pretty JSON: Minify (compress) JSON"
+			],
+			[
+				"pretty",
+				"Pretty JSON: Format (Pretty Print) JSON"
+			],
+			[
+				"pret",
+				"Pretty JSON: Minify (compress) JSON"
+			],
+			[
+				"repl",
+				"SublimeREPL: R"
+			],
+			[
+				"repl r",
+				"SublimeREPL: R"
+			],
+			[
+				"inst",
+				"Package Control: Install Package"
+			],
+			[
+				"packag",
+				"Package Control: Remove Package"
+			],
+			[
+				"set pyt",
+				"Set Syntax: Python"
+			],
+			[
+				"in",
+				"Package Control: Install Package"
+			],
+			[
+				"lint",
+				"SublimeLinter: Lint This View"
+			],
+			[
+				"pac",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 489.0
+	},
+	"console":
+	{
+		"height": 126.0,
+		"history":
+		[
+			"import urllib.request,os,hashlib; h = '7183a2d3e96f11eeadd761d777e62404' + 'e330c659d4bb41d3bdf022e94cab3cd0'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://sublime.wbond.net/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/Users/starying/Documents/doc_dc/usds_rank/2013_5yr_Summary_FileTemplates",
+		"/Users/starying/Documents/doc_dc/usds_rank/acs_sas",
+		"/Users/starying/Documents/doc_dc/usds_rank/acs_summ"
+	],
+	"file_history":
+	[
+		"/Users/starying/Documents/doc_dc/usds_rank/viirs_est.sublime-project",
+		"/Users/starying/Documents/doc_dc/usds_rank/acs_sas/eak_0002.sas",
+		"/Users/starying/Documents/doc_dc/usds_rank/directory.json",
+		"/Users/starying/Documents/doc_dc/usds_rank/group2/e20135ak0003000.txt",
+		"/Users/starying/Documents/doc_dc/usds_rank/group2/e20135ak0015000.txt",
+		"/Users/starying/Documents/doc_dc/usds_rank/2013_5yr_SAS/eak_0015.sas",
+		"/Users/starying/Documents/doc_dc/tutorial_nist_nvd/index.html",
+		"/Users/starying/Documents/doc_dc/usds_rank.sublime-project",
+		"/Users/starying/Documents/doc_dc/tutorial_nist_nvd/css/creative.css",
+		"/Users/starying/Documents/doc_dc/tutorial_nist_nvd/nist_nvd_notebook.ipynb",
+		"/Users/starying/Documents/doc_dc/tutorial_nist_nvd/parse_nvd_20151008.py",
+		"/Users/starying/Documents/doc_dc/scidb_feasibility/.gitignore",
+		"/Users/starying/Documents/doc_dc/tutorial_nist_nvd/css/bootstrap.css",
+		"/Users/starying/Documents/doc_dc/tutorial_nist_nvd/nvd_timeline_five.csv",
+		"/Users/starying/Documents/doc_dc/tutorial_nist_nvd/img/network_2015.svg",
+		"/Users/starying/Documents/doc_dc/tutorial_nist_nvd/js/svg-pan-zoom.min.js",
+		"/Users/starying/Documents/doc_dc/tutorial_nist_nvd/nvd_timeline.json",
+		"/Users/starying/Documents/doc_dc/tutorial_nist_nvd/tutorial_nist_nvd-gh-pages/index.html",
+		"/Users/starying/Documents/doc_dc/nist_nvd/nvd.json",
+		"/Users/starying/Documents/doc_dc/tutorial_nist_nvd/nist_nvd_notebook.html",
+		"/Users/starying/Documents/doc_dc/tutorial_nist_nvd/nvd_plat.csv",
+		"/Users/starying/Documents/doc_dc/nist_nvd/line_chart.html",
+		"/Users/starying/Documents/doc_dc/nist_nvd/nvd_network.html",
+		"/Users/starying/Documents/doc_dc/nist_nvd/index.html",
+		"/Users/starying/Documents/doc_dc/nist_nvd/parse_nvd_20151008.py",
+		"/Users/starying/Documents/doc_dc/nist_nvd/nvd_timeline.json",
+		"/Users/starying/Documents/doc_dc/nist_nvd/nvd_schema.csv",
+		"/Users/starying/Documents/doc_dc/nist_nvd/nvd_edge.csv",
+		"/Users/starying/Documents/doc_dc/nist_nvd/nvd_node.csv",
+		"/Users/starying/Documents/doc_dc/nist_nvd/nvdcve-2.0-2015.xml",
+		"/Users/starying/Documents/doc_dc/nist_nvd/css/creative.css",
+		"/Users/starying/Documents/doc_dc/nist_nvd/stylesheets/stylesheet.css",
+		"/Users/starying/Library/Application Support/Sublime Text 3/Packages/User/Preferences.sublime-settings",
+		"/Users/starying/Documents/doc_dc/nist_nvd/test.html",
+		"/Users/starying/Documents/doc_dc/nist_nvd/nvd_net.csv",
+		"/Users/starying/Documents/doc_dc/nist_nvd/official-cpe-dictionary_v2.3.xml",
+		"/Users/starying/Documents/doc_dc/nist_nvd.sublime-project",
+		"/Users/starying/Documents/doc_dc/verbal_project/top_20_dictionary_learning.txt",
+		"/Users/starying/Documents/doc_dc/verbal_project/top_20_sparsepca.txt",
+		"/Users/starying/Documents/doc_dc/verbal_project/top_20_no_yelp.txt",
+		"/Users/starying/Documents/doc_dc/verbal_project/20150919_verbal_pca.py",
+		"/Users/starying/Documents/doc_dc/verbal_project/20150828_verbal_data.py",
+		"/Users/starying/.bash_profile",
+		"/Users/starying/Documents/doc_dc/verbal_project/verbal_list.csv",
+		"/Users/starying/Library/Application Support/Sublime Text 3/Packages/User/Python.sublime-settings",
+		"/Users/starying/Documents/doc_dc/verbal_project.sublime-project",
+		"/Users/starying/Documents/doc_dc/verbal_project/data_acs5yr.csv",
+		"/Users/starying/Documents/doc_dc/verbal_project/us2010trf.txt",
+		"/Users/starying/Documents/doc_dc/verbal_project/zcta_tract_us2010trf.txt",
+		"/Users/starying/Documents/doc_dc/verbal_project/verbal_features.csv",
+		"/Users/starying/Documents/doc_dc/verbal_project/School Name",
+		"/Users/starying/Documents/doc_dc/DataCorpsMisc.sublime-project",
+		"/Users/starying/Documents/doc_dc/verbal_project/usda/Variable List-Table 1.csv",
+		"/Users/starying/Documents/doc_dc/verbal_project/education_elsi.csv",
+		"/Users/starying/Documents/doc_dc/verbal_project/20150915_geocode_local.py",
+		"/Users/starying/Documents/doc_dc/verbal_project/20150917_ziptract.py",
+		"/Users/starying/Documents/doc_dc/verbal_project/All-NBM-CSV-June-2014/broadband_test.csv",
+		"/Users/starying/Documents/doc_dc/verbal_project/museum_mudf15q1pub.csv",
+		"/Users/starying/Library/Application Support/Sublime Text 3/Packages/User/SublimeREPL.sublime-settings",
+		"/Users/starying/Library/Application Support/Sublime Text 3/Packages/SublimeREPL/SublimeREPL.sublime-settings",
+		"/Users/starying/Documents/doc_dc/verbal_project/fdic_Offices2/OFFICES2_DEFINITIONS.CSV",
+		"/Users/starying/Documents/doc_dc/verbal_project/npr-accessible-playgrounds.json",
+		"/Users/starying/Documents/doc_dc/verbal_project/verbal_list.json",
+		"/Users/starying/Documents/doc_dc/DOC Data Team Notes.txt",
+		"/Users/starying/Documents/doc_dc/gov_json/20150819_data_inv.py",
+		"/Users/starying/Documents/doc_dc/verbal_project/yelp_dataset_challenge_academic_dataset/yelp_academic_dataset_business.json",
+		"/Users/starying/Documents/doc_dc/gov_json/nist_data.json",
+		"/Users/starying/Documents/doc_dc/gov_json/liquid_fill/liquidFillGauge.js",
+		"/Users/starying/Documents/doc_dc/gov_json/liquid_fill/index.html",
+		"/Users/starying/Documents/doc_dc/gov_json/bea_data.json",
+		"/Users/starying/Documents/doc_dc/gov_json/commerce_data.json",
+		"/Users/starying/Library/Application Support/Sublime Text 3/Packages/HTML-CSS-JS Prettify/.jsbeautifyrc",
+		"/Users/starying/Documents/doc_dc/gov_json/noaa_data.json",
+		"/Users/starying/Documents/20150819_data_inv.py",
+		"/Users/starying/Documents/nist_data.json",
+		"/Users/starying/Documents/commerce_data.json",
+		"/Users/starying/Documents/bea_data.json",
+		"/Users/starying/Documents/20150810_Grant_Awards.py",
+		"/Users/starying/Documents/noaa_data.json",
+		"/Users/starying/Documents/DOC Data Team Notes",
+		"/Users/starying/Documents/Sunburst_EDA/Zoom_Switch/index.html",
+		"/Users/starying/Downloads/ForceMe/dprkforce.html",
+		"/Users/starying/Downloads/eda_grants.json",
+		"/Users/starying/Documents/Sunburst_EDA/Zoom_Switch/flare.json",
+		"/Users/starying/Downloads/2015_Grant_Awards.csv",
+		"/Users/starying/Documents/pdfcrdrt.py",
+		"/Users/starying/Documents/orthcluster.py",
+		"/Users/starying/Documents/dprk.py",
+		"/Users/starying/Documents/Sunburst_EDA/Zoom/index.html",
+		"/Users/starying/Documents/Sunburst_EDA/Show/index.html",
+		"/Users/starying/Documents/Sunburst_EDA/Show/sequences.css",
+		"/Users/starying/Documents/Sunburst_EDA/Show/sequences.js",
+		"/Users/starying/Downloads/2015_EDA_Grant_cleaned.csv",
+		"/Users/starying/Downloads/ForceMe/genderbalance.html",
+		"/Users/starying/Documents/dprk_dvexscript.r",
+		"/Users/starying/Documents/dprk_r.r",
+		"/Users/starying/Dropbox/DPRK/Animate/DPRK Migration.html",
+		"/Users/starying/Dropbox/DPRK/Animate/DPRK Migration Big.html",
+		"/Users/starying/Downloads/Data_Cleaned_Final/DPRK_mig_combined.txt",
+		"/Users/starying/Downloads/Data_Cleaned_Final/DPRK_mig_cleaned.csv",
+		"/Users/starying/Downloads/Data_Feed.csv",
+		"/opt/local/etc/macports/sources.conf",
+		"/Users/starying/Downloads/ForceMe/data.tsv",
+		"/Users/starying/Downloads/ForceMe/malnutriition.json",
+		"/Users/starying/Downloads/ForceMe/scaleme.html",
+		"/Users/starying/Downloads/ForceMe/DPRK_mig_combined2.json",
+		"/Users/starying/Downloads/ForceMe/final/dprk_mig_combined3.json",
+		"/Users/starying/Downloads/ForceMe/final/dprkforce.html",
+		"/Users/starying/Downloads/ForceMe/final/scaleme.html",
+		"/Users/starying/Downloads/ForceMe/mapme.html",
+		"/Users/starying/Downloads/ForceMe/zoomme.html",
+		"/Users/starying/Downloads/ForceMe/showme.html",
+		"/Users/starying/Downloads/ForceMe/forcelabel.html",
+		"/Users/starying/Downloads/ForceMe/dprktopo.json",
+		"/Users/starying/Downloads/ForceMe/DPRK_mig_combined.json",
+		"/Users/starying/Downloads/ForceMe/graph.json",
+		"/Users/starying/Downloads/ForceMe/kp-all.geo.json",
+		"/Users/starying/Downloads/ForceMe/ustopo.json",
+		"/Users/starying/Downloads/ForceMe/dprk_topo.json",
+		"/Users/starying/Downloads/ForceMe/dprk.geojson.json",
+		"/Users/starying/Downloads/ForceMe/us-topo.geojson",
+		"/Users/starying/Downloads/ForceMe/dprk.geojson",
+		"/Users/starying/Documents/simple_plot.py",
+		"/Users/starying/Documents/38115.pdf.json",
+		"/Users/starying/Downloads/Data_Cleaned_Final/Table 16 - Live Births by labor class, province, and age group.csv",
+		"/Users/starying/Downloads/DPRK R Example/Table 6.12 Morbidity.csv",
+		"/Users/starying/Downloads/DPRK R Example/Table 7.3 Malnutrition Estimate.csv",
+		"/Users/starying/Downloads/DPRK R Example/Table 20 - Migrant Population RURAL.csv"
+	],
+	"find":
+	{
+		"height": 34.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			",",
+			"insurance",
+			"B99011e1",
+			"B22001e4",
+			"B22001e3",
+			"B17001e2",
+			"B17001e1",
+			"B22005B",
+			"B22005A",
+			"B22005",
+			"B22003",
+			"B22003e2",
+			"snap",
+			"LOGRECNO",
+			"SEQUENCE",
+			"CHARITER",
+			"STUSAB",
+			"FILETYPE",
+			"FILEID",
+			"snap",
+			"Jquer",
+			"cve s",
+			"navbar-default",
+			"navbar-fixed-top",
+			"body>",
+			"#e",
+			"navbar",
+			"contai",
+			"visuals",
+			"^",
+			"hea",
+			"ones",
+			"master",
+			"network",
+			"starcying",
+			"star",
+			"master",
+			"d3",
+			"timeline.json",
+			"goog",
+			"9467bd",
+			"[1]",
+			"myLegend",
+			"myChart",
+			"svg_chart",
+			"chartContainer",
+			"());",
+			"container-fluid main-container",
+			"Data",
+			"data",
+			"right",
+			"svg",
+			"green",
+			"hail_dama",
+			"y",
+			"x",
+			"'",
+			"}",
+			"Method",
+			"['timeline']",
+			"data",
+			"\"Value\": ",
+			"\"Value\": 17",
+			"2015-11-",
+			"2015-12-",
+			"2015-12",
+			"Date",
+			"FFFFFF",
+			"height",
+			"addNodes",
+			"j",
+			"pivotx",
+			"0.0",
+			"value",
+			"nextval",
+			"node",
+			"edge",
+			"dbgenre",
+			"pyth",
+			"kasda",
+			"return",
+			"software_ontology",
+			"software_search",
+			"\"microsoft\"",
+			"/microsoft",
+			"apple",
+			"<vuln:source>",
+			"reference_type",
+			"mit",
+			"print .*",
+			"nvd_dict[vuln_",
+			"vuln_.* \\=",
+			"print.*%.*",
+			"print .*",
+			"vuln_id",
+			"vuln_vector",
+			"vuln_summ",
+			"vuln_vector",
+			"vuln_link",
+			"vuln_vector",
+			"vuln_avail",
+			"vuln_vector",
+			"vuln_integ",
+			"vuln_vector",
+			"vuln_confid",
+			"vuln_vector",
+			"vuln_auth",
+			"vuln_vector",
+			"vuln_compl",
+			"vuln:vulnerable-configuration",
+			"xmlns:",
+			"http://scap.nist.gov/schema/feed/vulnerability/2.0",
+			"()",
+			",",
+			"maxWeight",
+			"\\n",
+			"\\)",
+			"\\(",
+			"\\-",
+			"\\/",
+			"\\&",
+			" ",
+			"\\n",
+			"ƒtract",
+			".*\\s",
+			"\\s\\s",
+			"\\s\\Z",
+			"\\s\\r"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": true,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "usds_rank.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3836,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								566,
+								568
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content"
+							],
+							"side_bar_folders_auto_load_folder": 1,
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 153.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "acs_sas/eak_0001.sas",
+					"semi_transient": true,
+					"settings":
+					{
+						"buffer_size": 786,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								708,
+								708
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content"
+							],
+							"side_bar_folders_auto_load_folder": 1,
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 365.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				}
+			]
+		},
+		{
+			"selected": 1,
+			"sheets":
+			[
+				{
+					"buffer": 2,
+					"file": "variables.json",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 11119433,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								975052,
+								975059
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content"
+							],
+							"side_bar_folders_auto_load_folder": 1,
+							"syntax": "Packages/JavaScript/JSON.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 345936.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "acs_sas/eak_0074.sas",
+					"semi_transient": true,
+					"settings":
+					{
+						"buffer_size": 2768,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								786,
+								786
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content"
+							],
+							"side_bar_folders_auto_load_folder": 1,
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 1656.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 26.0
+	},
+	"input":
+	{
+		"height": 31.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			],
+			[
+				0,
+				1,
+				1,
+				2
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			0.5,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 100.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "viirs_est.sublime-project",
+	"replace":
+	{
+		"height": 48.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"",
+				"~/Documents/pdf_scanner/pdf_scanner.sublime-project"
+			]
+		],
+		"width": 380.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 162.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
