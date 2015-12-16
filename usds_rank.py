@@ -131,6 +131,12 @@ def load_varlist(fname):
 #     return custom
 
 def build_custom_json(varlist, score, force=False):
+    with open('header.json') as f:
+        existing_score = json.load(f).keys()
+    with open('header.json') as f:
+        existing_variables = json.load(f).keys()
+    if score != existing_score or varlist != existing_variables:
+        force = True
     if force or not os.path.isfile('custom.json'):
         print '*****************************************************************************************************************************'
         print 'Building Custom JSON:'
@@ -290,12 +296,12 @@ if __name__=='__main__':
                             for popme in [u'NAME', u'LSAD', u'STATE', u'COUNTY', u'TRACT', u'CENSUSAREA']:
                                 feat['properties'].pop(popme)
                             for rank in variables:
-                                feat['properties']['sc'+rank] = custom[tract]['score_'+rank]
-                            feat['properties']['fisc'] = custom[tract]['final_score']
+                                feat['properties']['s'+rank] = custom[tract]['score_'+rank]
+                            feat['properties']['r'] = custom[tract]['final_score']
                             try:
-                                feat['properties']['fin'] = compl_append[tract][0]
+                                feat['properties']['f'] = compl_append[tract][0]
                             except KeyError:
-                                feat['properties']['fin'] = 0
+                                feat['properties']['f'] = 0
                             features.append(feat)
                             us_features.append(feat)
                 rank_map = {
@@ -310,3 +316,4 @@ if __name__=='__main__':
         'crs':{'init': u'epsg:4269'}}
     with open('./tracts/us_all_tracts.geojson', 'wb') as f:
         json.dump(rank_map, f)
+    os.system("topojson -o ./tracts/us_all_tracts.topojson ./tracts/us_all_tracts.geojson")

@@ -20,9 +20,14 @@ html, body, #mapdiv {height: 100%; width: 100%;}
 <body>
 <div id="mapdiv">
 <script>
+// var std = L.tileLayer(
+//   'https://api.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1Ijoic3RhcmNoeWluZyIsImEiOiJjaWk3czd5eDgwMjdrdDBrZjZ3M28yaGI2In0.0ca1_52-8oxNyjirS5zgWA', {
+//     id: 'mapbox.light',
+//     attribution: 'mapbox'
+//   });
+
 var std = L.tileLayer(
-  'https://api.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1Ijoic3RhcmNoeWluZyIsImEiOiJjaWk3czd5eDgwMjdrdDBrZjZ3M28yaGI2In0.0ca1_52-8oxNyjirS5zgWA', {
-    id: 'mapbox.light',
+  'http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png', {
     attribution: 'mapbox'
   });
 
@@ -40,7 +45,7 @@ corslite('./tracts/us_all_tracts.topojson', function(err, resp) {
     var ctx = canvas.getContext('2d');
     var tile = tileIndex.getTile(zoom, tilePoint.x, tilePoint.y);
     if(!tile) return;
-    ctx.strokeStyle = '#f00'; ctx.fillStyle = 'rgba(255,0,0,0.05)';
+    ctx.strokeStyle = '#ff0'; ctx.fillStyle = 'rgba(255,0,0,0.05)';
     var features = tile.features;
     for (var i = 0; i < features.length; i++) {
       var feature = features[i], typeChanged = type !== feature.type,
