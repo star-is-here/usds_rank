@@ -1,4 +1,4 @@
-import csv, json, pprint, re, os, numpy as np, fiona, shapely
+import csv, json, pprint, re, os, numpy as np, fiona, shapely, sys
 from scipy import stats
 from tqdm import *
 
@@ -182,14 +182,17 @@ if __name__=='__main__':
     # CFPB Complaints Database
     # ZCTA to Tract Relationship file here: http://www2.census.gov/geo/docs/maps-data/data/rel/zcta_tract_rel_10.txt
     ########################################################################################################################################
+    print '*****************************************************************************************************************************'
     print 'Loading Complaints:'
+    print '*****************************************************************************************************************************'
     complaints = loadinput('./Consumer_Complaints.csv','csv')
     compl_list = []
     for complaint in tqdm(complaints[1:]):
         compl_list.append(complaint[9])
-    print 'Complete'
 
+    print '*****************************************************************************************************************************'
     print 'Counting Complaints:'
+    print '*****************************************************************************************************************************'
     compl_cnt = {}
     # This Craps out for some reason
     # compl_cnt = {x:compl_list.count(x) for x in compl_list}
@@ -199,9 +202,10 @@ if __name__=='__main__':
                 compl_cnt[zips] += 1
             else:
                 compl_cnt[zips] = 1
-    print 'Complete'
 
+    print '*****************************************************************************************************************************'
     print 'Migrating to Census Tract:'
+    print '*****************************************************************************************************************************'
     ziptract = [ [(x[0],x[4]),float(x[18])/100] for x in loadinput('./zcta_tract_rel_10.txt', 'csv')[1:] ]
     for i, row in tqdm(enumerate(ziptract)):
         zipcode = row[0][0]
@@ -209,9 +213,10 @@ if __name__=='__main__':
             ziptract[i].append(row[1]*compl_cnt[zipcode])
         else:
             ziptract[i].append(0)
-    print 'Complete'
 
+    print '*****************************************************************************************************************************'
     print 'Counting Census Tract:'
+    print '*****************************************************************************************************************************'
     compl_append = {}
     for row in tqdm(ziptract):
         tract = row[0][1]
@@ -220,7 +225,6 @@ if __name__=='__main__':
         else:
             compl_append[tract][0] += row[2]
             compl_append[tract][1] += 1
-    print 'Complete'
     ########################################################################################################################################
     # ACS 5-year summary files
     ########################################################################################################################################
@@ -276,6 +280,7 @@ if __name__=='__main__':
     ########################################################################################################################################
     rootdir = './tracts/'
     us_features = []
+    empty_tracts = []
     for subdir, dirs, files in os.walk(rootdir):
         for f in tqdm(files):
             ################################################################################################################################
@@ -292,7 +297,7 @@ if __name__=='__main__':
                         # Toss out extra data to save space
                         ####################################################################################################################
                         tract = feat['properties']['GEO_ID'][9:]
-                        if tract in custom.keys():
+                        try:
                             for popme in [u'NAME', u'LSAD', u'STATE', u'COUNTY', u'TRACT', u'CENSUSAREA']:
                                 feat['properties'].pop(popme)
                             for rank in variables:
@@ -304,6 +309,8 @@ if __name__=='__main__':
                                 feat['properties']['f'] = 0
                             features.append(feat)
                             us_features.append(feat)
+                        except KeyError:
+                            empty_tracts.append(tract)
                 rank_map = {
                     'type':'FeatureCollection',
                     'features':features,
@@ -316,4 +323,11 @@ if __name__=='__main__':
         'crs':{'init': u'epsg:4269'}}
     with open('./tracts/us_all_tracts.geojson', 'wb') as f:
         json.dump(rank_map, f)
+    print '*****************************************************************************************************************************'
+    print 'Empty Tracts:'
+    print '*****************************************************************************************************************************'
+    pp.pprint(empty_tracts)
+    print '*****************************************************************************************************************************'
+    print 'Converting GeoJSON to TopoJSON for space concerns'
+    print '*****************************************************************************************************************************'
     os.system("topojson -o ./tracts/us_all_tracts.topojson ./tracts/us_all_tracts.geojson")
