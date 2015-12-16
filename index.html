@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title></title>
+<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0"/>
+<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css"/>
+<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+<script src="http://handygeospatial.github.io/mapsites/js/leaflet-hash.js"></script>
+<script src="http://handygeospatial.github.io/mapsites/js/TileLayer.GeoJSON.js"></script>
+<script src="http://handygeospatial.github.io/mapsites/js/corslite.js"></script>
+<script src="http://d3js.org/topojson.v1.min.js"></script>
+<script src="./geojson-vt/geojson-vt.js"></script>
+<style>
+body {padding: 0; margin: 0}
+html, body, #mapdiv {height: 100%; width: 100%;}
+.leaflet-container {background: #fff;}
+</style>
+</head>
+<body>
+<div id="mapdiv">
+<script>
+var std = L.tileLayer(
+  'https://api.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1Ijoic3RhcmNoeWluZyIsImEiOiJjaWk3czd5eDgwMjdrdDBrZjZ3M28yaGI2In0.0ca1_52-8oxNyjirS5zgWA', {
+    id: 'mapbox.light',
+    attribution: 'mapbox'
+  });
+
+var canvas = L.tileLayer.canvas();
+var tileIndex;
+var options = {maxZoom: 10, baseZoom: 18, maxPoints: 100, debug: 1};
+corslite('./tracts/us_all_tracts.topojson', function(err, resp) {
+  data = JSON.parse(resp.response);
+  if (JSON.parse(resp.response).type === 'Topology') {
+            var firstKey = Object.keys(data.objects)[0];
+            data = topojson.feature(data, data.objects[firstKey]);
+        };
+  tileIndex = geojsonvt(data, options);
+  canvas.drawTile = function(canvas, tilePoint, zoom) {
+    var ctx = canvas.getContext('2d');
+    var tile = tileIndex.getTile(zoom, tilePoint.x, tilePoint.y);
+    if(!tile) return;
+    ctx.strokeStyle = '#f00'; ctx.fillStyle = 'rgba(255,0,0,0.05)';
+    var features = tile.features;
+    for (var i = 0; i < features.length; i++) {
+      var feature = features[i], typeChanged = type !== feature.type,
+        type = feature.type;
+      ctx.beginPath();
+      for (var j = 0; j < feature.geometry.length; j++) {
+        var ring = feature.geometry[j];
+        for (var k = 0; k < ring.length; k++) {
+          var p = ring[k];
+          if (k) ctx.lineTo(p[0] / 16.0, p[1] / 16.0);
+          else ctx.moveTo(p[0] / 16.0, p[1] / 16.0);
+        }
+      }
+      if (type === 3) ctx.fill('evenodd');
+      ctx.stroke();
+    }
+  };
+  var map = L.map('mapdiv', {
+    center: [37.8, -96], zoom: 4,
+    maxZoom: 10, minZoom: 4,
+    layers: [std, canvas]});
+  var hash = L.hash(map);
+  L.control.layers( 
+    {'canvas': canvas}).addTo(map);
+}, true);
+</script>
+</body>
+</html>

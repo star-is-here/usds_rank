@@ -8,3 +8,9 @@
 *.gz
 *.sublime-project
 *.sublime-workspace
+*.dbf
+*.prj
+*.shp
+*.shx
+*.xml
+*.geojson
