@@ -6,7 +6,7 @@
 <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0"/>
 <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css"/>
 <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
-<script src="http://handygeospatial.github.io/mapsites/js/leaflet-hash.js"></script>
+<!-- <script src="http://handygeospatial.github.io/mapsites/js/leaflet-hash.js"></script> -->
 <script src="http://handygeospatial.github.io/mapsites/js/TileLayer.GeoJSON.js"></script>
 <script src="http://handygeospatial.github.io/mapsites/js/corslite.js"></script>
 <script src="http://d3js.org/topojson.v1.min.js"></script>
@@ -28,8 +28,19 @@ html, body, #mapdiv {height: 100%; width: 100%;}
 
 var std = L.tileLayer(
   'http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png', {
-    attribution: 'mapbox'
+    attribution: 'cartocdn'
   });
+
+function colorizeFeatures(data) {
+    var counter = 0;
+    for (var i = 0; i < data.features.length; i++) {
+        // data.features[i].properties.color = 'hsl(' + 360 * Math.random() + ', 50%, 50%)';
+        data.features[i].properties.color = data.features[i].properties.r > 70 ? 'rgba(255,' + Math.round(255 * (data.features[i].properties.r - 60) / 40) + ', 0, 0.8)' : 'rgba(0,0,0,0.0)';
+        // data.features[i].properties.color = 'rgba(255,0,0,0.8)';
+        counter += data.features[i].geometry.coordinates[0].length;
+    }
+    return counter;
+}
 
 var canvas = L.tileLayer.canvas();
 var tileIndex;
@@ -40,16 +51,23 @@ corslite('./tracts/us_all_tracts.topojson', function(err, resp) {
             var firstKey = Object.keys(data.objects)[0];
             data = topojson.feature(data, data.objects[firstKey]);
         };
+  colorizeFeatures(data);
+  // console.log(data);
   tileIndex = geojsonvt(data, options);
+  console.log(tileIndex);
   canvas.drawTile = function(canvas, tilePoint, zoom) {
     var ctx = canvas.getContext('2d');
     var tile = tileIndex.getTile(zoom, tilePoint.x, tilePoint.y);
     if(!tile) return;
-    ctx.strokeStyle = '#ff0'; ctx.fillStyle = 'rgba(255,0,0,0.05)';
+    ctx.lineWidth = 0.01;
+    // ctx.strokeStyle = '#ff0'; 
+    // ctx.fillStyle = 'rgba(255,0,0,0.8)';
     var features = tile.features;
     for (var i = 0; i < features.length; i++) {
-      var feature = features[i], typeChanged = type !== feature.type,
+      var feature = features[i], 
+        typeChanged = type !== feature.type,
         type = feature.type;
+      ctx.fillStyle = feature.tags.color ? feature.tags.color : 'rgba(255,0,0,0.05)';
       ctx.beginPath();
       for (var j = 0; j < feature.geometry.length; j++) {
         var ring = feature.geometry[j];
@@ -67,9 +85,14 @@ corslite('./tracts/us_all_tracts.topojson', function(err, resp) {
     center: [37.8, -96], zoom: 4,
     maxZoom: 10, minZoom: 4,
     layers: [std, canvas]});
-  var hash = L.hash(map);
-  L.control.layers( 
-    {'canvas': canvas}).addTo(map);
+  map.on('move', function(){
+    console.log(map.getBounds());
+    console.log(map.getZoom());
+    // console.log(tileIndex.getTile(map.getZoom(),));
+  });
+  // var hash = L.hash(map);
+  // L.control.layers( 
+  //   {'canvas': canvas}).addTo(map);
 }, true);
 </script>
 </body>

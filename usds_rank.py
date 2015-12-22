@@ -1,6 +1,7 @@
-import csv, json, pprint, re, os, numpy as np, fiona, shapely, sys
+import csv, json, pprint, re, os, numpy as np, fiona, sys
 from scipy import stats
 from tqdm import *
+from shapely.geometry import asShape
 
 pp = pprint.PrettyPrinter(indent=2)
 
@@ -156,7 +157,7 @@ def build_custom_json(varlist, score, force=False):
                 position = [ i for i,x in enumerate(acs_summary[0]) if x == var ]
                 if var in score:
                     scoreme = [ x[position[0]] for x in acs_summary[1:] ]
-                    scored = [ stats.percentileofscore(scoreme, x) for x in scoreme ]
+                    scored = [ round(stats.percentileofscore(scoreme, x),2) for x in scoreme ]
                 for i, row in enumerate(acs_summary[1:]):
                     try:
                         custom[row[-1][7:]][var] = row[position[0]]
@@ -167,7 +168,7 @@ def build_custom_json(varlist, score, force=False):
                         custom[row[-1][7:]]['score_'+var] = scored[i]
         position = [ x for x in header if 'score' in x ]
         for tract in custom.keys():
-            avg = sum([ float(custom[tract][x]) for x in position ])/len(position)
+            avg = round(sum([ float(custom[tract][x]) for x in position ])/len(position),2)
             custom[tract]['final_score'] = avg
         header.extend(['final_score'])
         # custom['varnames'] = header
@@ -293,18 +294,21 @@ if __name__=='__main__':
                 ############################################################################################################################
                 with fiona.open('/', vfs='zip://'+os.path.join(subdir, f), layer=0) as src:
                     for feat in src:
+                        feat['properties']['x'] = round(asShape(feat['geometry']).centroid.x,4)
+                        feat['properties']['y'] = round(asShape(feat['geometry']).centroid.y,4)
                         ####################################################################################################################
                         # Toss out extra data to save space
                         ####################################################################################################################
                         tract = feat['properties']['GEO_ID'][9:]
                         try:
-                            for popme in [u'NAME', u'LSAD', u'STATE', u'COUNTY', u'TRACT', u'CENSUSAREA']:
+                            feat['properties']['g'] = feat['properties']['GEO_ID']
+                            for popme in [u'NAME', u'LSAD', u'STATE', u'COUNTY', u'TRACT', u'CENSUSAREA', u'GEO_ID']:
                                 feat['properties'].pop(popme)
-                            for rank in variables:
-                                feat['properties']['s'+rank] = custom[tract]['score_'+rank]
+                            # for rank in variables:
+                            #     feat['properties']['s'+rank] = custom[tract]['score_'+rank]
                             feat['properties']['r'] = custom[tract]['final_score']
                             try:
-                                feat['properties']['f'] = compl_append[tract][0]
+                                feat['properties']['f'] = round(compl_append[tract][0],0)
                             except KeyError:
                                 feat['properties']['f'] = 0
                             features.append(feat)
@@ -330,4 +334,4 @@ if __name__=='__main__':
     print '*****************************************************************************************************************************'
     print 'Converting GeoJSON to TopoJSON for space concerns'
     print '*****************************************************************************************************************************'
-    os.system("topojson -o ./tracts/us_all_tracts.topojson ./tracts/us_all_tracts.geojson")
+    os.system("topojson -p -o ./tracts/us_all_tracts.topojson ./tracts/us_all_tracts.geojson")
