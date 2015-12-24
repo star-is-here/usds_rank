@@ -10,10 +10,13 @@
 <script src="http://handygeospatial.github.io/mapsites/js/TileLayer.GeoJSON.js"></script>
 <script src="http://handygeospatial.github.io/mapsites/js/corslite.js"></script>
 <script src="http://d3js.org/topojson.v1.min.js"></script>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://dimplejs.org/dist/dimple.v2.1.6.min.js"></script>
 <script src="./geojson-vt/geojson-vt.js"></script>
 <style>
 body {padding: 0; margin: 0}
-html, body, #mapdiv {height: 100%; width: 100%;}
+html, body {height: 100%; width: 100%;}
+#mapdiv {height: 50%; width: 100%;}
 .leaflet-container {background: #fff;}
 </style>
 </head>
@@ -31,15 +34,38 @@ var std = L.tileLayer(
     attribution: 'cartocdn'
   });
 
-function colorizeFeatures(data) {
-    var counter = 0;
-    for (var i = 0; i < data.features.length; i++) {
-        // data.features[i].properties.color = 'hsl(' + 360 * Math.random() + ', 50%, 50%)';
-        data.features[i].properties.color = data.features[i].properties.r > 70 ? 'rgba(255,' + Math.round(255 * (data.features[i].properties.r - 60) / 40) + ', 0, 0.8)' : 'rgba(0,0,0,0.0)';
-        // data.features[i].properties.color = 'rgba(255,0,0,0.8)';
-        counter += data.features[i].geometry.coordinates[0].length;
-    }
-    return counter;
+function initFeatures(data) {
+  var counter = 0;
+  for (var i = 0; i < data.features.length; i++) {
+      data.features[i].properties.color = data.features[i].properties.r > 70 ? 'rgba(' + Math.round(255 * (data.features[i].properties.r - 60) / 40) + ', 0, 0, 0.8)' : 'rgba(0,0,0,0.0)';
+      data.features[i].properties.inview = 1;
+      counter += data.features[i].geometry.coordinates[0].length;
+  }
+  return counter;
+}
+
+function checkBounds(data, bounds) {
+  var counter = 0;
+  for (var i = 0; i < data.features.length; i++) {
+      if (bounds.contains([data.features[i].properties.y, data.features[i].properties.x])) {
+        data.features[i].properties.inview = 1;
+      }
+      else {
+        data.features[i].properties.inview = 0;
+      }
+      counter += data.features[i].geometry.coordinates[0].length;
+  }
+  return counter;
+}
+
+function filterData (data) {
+  var chartdata = [];
+  for (var i = 0; i < data.features.length; i++) {
+      if (data.features[i].properties.inview == 1) {
+        chartdata.push({"Location":data.features[i].properties.g,  "Need":data.features[i].properties.r});
+      }
+  }
+  return chartdata.sort(function(a, b){return b-a}).slice(0,10);
 }
 
 var canvas = L.tileLayer.canvas();
@@ -51,22 +77,20 @@ corslite('./tracts/us_all_tracts.topojson', function(err, resp) {
             var firstKey = Object.keys(data.objects)[0];
             data = topojson.feature(data, data.objects[firstKey]);
         };
-  colorizeFeatures(data);
-  // console.log(data);
+  initFeatures(data);
   tileIndex = geojsonvt(data, options);
-  console.log(tileIndex);
+  // var chartdata = [];
   canvas.drawTile = function(canvas, tilePoint, zoom) {
     var ctx = canvas.getContext('2d');
     var tile = tileIndex.getTile(zoom, tilePoint.x, tilePoint.y);
     if(!tile) return;
     ctx.lineWidth = 0.01;
-    // ctx.strokeStyle = '#ff0'; 
-    // ctx.fillStyle = 'rgba(255,0,0,0.8)';
     var features = tile.features;
     for (var i = 0; i < features.length; i++) {
       var feature = features[i], 
         typeChanged = type !== feature.type,
         type = feature.type;
+      // chartdata.push({"Location":feature.tags.g,  "Need":feature.tags.r});
       ctx.fillStyle = feature.tags.color ? feature.tags.color : 'rgba(255,0,0,0.05)';
       ctx.beginPath();
       for (var j = 0; j < feature.geometry.length; j++) {
@@ -85,15 +109,61 @@ corslite('./tracts/us_all_tracts.topojson', function(err, resp) {
     center: [37.8, -96], zoom: 4,
     maxZoom: 10, minZoom: 4,
     layers: [std, canvas]});
+  checkBounds(data, map.getBounds());
+  // var rank = chartdata.sort(function(a, b){return b-a}).slice(0,10);
+  var svg = dimple.newSvg("body", "100%", "50%");
+  svg.append("rect")
+    // .attr("x", 0)
+    // .attr("y", 0)
+    .attr("width", "100%")
+    .attr("height", "100%")
+    .style("fill", "#456"); 
+  var topten = new dimple.chart(svg, filterData(data));
+  y = topten.addCategoryAxis("y", "Location");
+  x = topten.addMeasureAxis("x", "Need");
+  y.addOrderRule("Need");
+  topten.addSeries(null, dimple.plot.bar);
+  // x.hidden = true;
+  y.hidden = true;
+  topten.draw();
+
   map.on('move', function(){
-    console.log(map.getBounds());
-    console.log(map.getZoom());
+    checkBounds(data, map.getBounds());
+    // var chartdatanew = []
+    canvas.drawTile = function(canvas, tilePoint, zoom) {
+    var ctx = canvas.getContext('2d');
+    var tile = tileIndex.getTile(zoom, tilePoint.x, tilePoint.y);
+    if(!tile) return;
+    ctx.lineWidth = 0.01;
+    var features = tile.features;
+    for (var i = 0; i < features.length; i++) {
+      var feature = features[i], 
+        typeChanged = type !== feature.type,
+        type = feature.type;
+      // chartdatanew.push({"Tract":feature.tags.g,  "Score":feature.tags.r});
+      ctx.fillStyle = feature.tags.color ? feature.tags.color : 'rgba(255,0,0,0.05)';
+      ctx.beginPath();
+      for (var j = 0; j < feature.geometry.length; j++) {
+        var ring = feature.geometry[j];
+        for (var k = 0; k < ring.length; k++) {
+          var p = ring[k];
+          if (k) ctx.lineTo(p[0] / 16.0, p[1] / 16.0);
+          else ctx.moveTo(p[0] / 16.0, p[1] / 16.0);
+        }
+      }
+      if (type === 3) ctx.fill('evenodd');
+      ctx.stroke();
+    }
+  };
+  topten.data = filterData(data);
+  topten.draw(1000);
     // console.log(tileIndex.getTile(map.getZoom(),));
   });
   // var hash = L.hash(map);
   // L.control.layers( 
   //   {'canvas': canvas}).addTo(map);
 }, true);
+
 </script>
 </body>
 </html>

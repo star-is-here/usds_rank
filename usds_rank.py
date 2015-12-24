@@ -44,10 +44,11 @@ def extract_acs_sum(fname):
         for row in f:
             logrecno = row[13:20]
             geoid = row[178:218].strip()
-            geog[logrecno] = geoid
+            gname = row[218:].strip().decode('utf-8', 'ignore')
+            geog[logrecno] = [geoid, gname]
         for i, row in enumerate(acs):
-            if geog[row[5]][0:2] == '14':
-                row.append(geog[row[5]])
+            if geog[row[5]][0][0:2] == '14':
+                row.extend(geog[row[5]])
             else:
                 # Remove Non tract geography
                 nottract.append(i)
@@ -55,7 +56,7 @@ def extract_acs_sum(fname):
         nottract.sort(reverse=True)
         for row in nottract:
             del acs[row]
-    return [header + ['geoid']] + acs
+    return [header + ['geoid', 'gname']] + acs
 
 def build_directory(dirnm, force=False):
     # print 'Loading Variable to Summary Table Mapping'
@@ -160,12 +161,13 @@ def build_custom_json(varlist, score, force=False):
                     scored = [ round(stats.percentileofscore(scoreme, x),2) for x in scoreme ]
                 for i, row in enumerate(acs_summary[1:]):
                     try:
-                        custom[row[-1][7:]][var] = row[position[0]]
+                        custom[row[-2][7:]][var] = row[position[0]]
                     except KeyError:
-                        custom[row[-1][7:]] = {}
-                        custom[row[-1][7:]][var] = row[position[0]]
+                        custom[row[-2][7:]] = {}
+                        custom[row[-2][7:]][var] = row[position[0]]
                     if var in score:
-                        custom[row[-1][7:]]['score_'+var] = scored[i]
+                        custom[row[-2][7:]]['score_'+var] = scored[i]
+                        custom[row[-2][7:]]['gname'] = row[-1]
         position = [ x for x in header if 'score' in x ]
         for tract in custom.keys():
             avg = round(sum([ float(custom[tract][x]) for x in position ])/len(position),2)
@@ -301,7 +303,8 @@ if __name__=='__main__':
                         ####################################################################################################################
                         tract = feat['properties']['GEO_ID'][9:]
                         try:
-                            feat['properties']['g'] = feat['properties']['GEO_ID']
+                            # feat['properties']['g'] = feat['properties']['GEO_ID']
+                            feat['properties']['g'] = custom[tract]['gname']                           
                             for popme in [u'NAME', u'LSAD', u'STATE', u'COUNTY', u'TRACT', u'CENSUSAREA', u'GEO_ID']:
                                 feat['properties'].pop(popme)
                             # for rank in variables:
