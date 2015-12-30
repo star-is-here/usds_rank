@@ -1,7 +1,10 @@
-import csv, json, pprint, re, os, numpy as np, fiona, sys
+import csv, json, pprint, re, os, numpy as np, fiona, sys, matplotlib.pyplot as plt
 from scipy import stats
-from tqdm import *
 from shapely.geometry import asShape
+from wordcloud import WordCloud, ImageColorGenerator, STOPWORDS
+from scipy.misc import imread
+from PIL import Image
+from tqdm import *
 
 pp = pprint.PrettyPrinter(indent=2)
 
@@ -307,14 +310,16 @@ if __name__=='__main__':
                             feat['properties']['g'] = custom[tract]['gname']                           
                             for popme in [u'NAME', u'LSAD', u'STATE', u'COUNTY', u'TRACT', u'CENSUSAREA', u'GEO_ID']:
                                 feat['properties'].pop(popme)
-                            # for rank in variables:
-                            #     feat['properties']['s'+rank] = custom[tract]['score_'+rank]
+                            for rank in variables:
+                                feat['properties']['s'+rank] = custom[tract]['score_'+rank]
                             feat['properties']['r'] = custom[tract]['final_score']
                             try:
                                 feat['properties']['f'] = round(compl_append[tract][0],0)
                             except KeyError:
                                 feat['properties']['f'] = 0
                             features.append(feat)
+                            for rank in variables:
+                                feat['properties'].pop('s'+rank)
                             us_features.append(feat)
                         except KeyError:
                             empty_tracts.append(tract)
@@ -322,8 +327,9 @@ if __name__=='__main__':
                     'type':'FeatureCollection',
                     'features':features,
                     'crs':{'init': u'epsg:4269'}}
-                with open('./tracts/%s.geojson'%f, 'wb') as f:
-                    json.dump(rank_map, f)
+                with open('./tracts/%s.geojson'%f, 'wb') as fl:
+                    json.dump(rank_map, fl)
+                os.system("topojson -p -o ./tracts/%s.topojson ./tracts/%s.geojson"%(f,f))
     rank_map = {
         'type':'FeatureCollection',
         'features':us_features,
@@ -338,3 +344,32 @@ if __name__=='__main__':
     print 'Converting GeoJSON to TopoJSON for space concerns'
     print '*****************************************************************************************************************************'
     os.system("topojson -p -o ./tracts/us_all_tracts.topojson ./tracts/us_all_tracts.geojson")
+    print '*****************************************************************************************************************************'
+    print 'Generating wordcloud'
+    print '*****************************************************************************************************************************'
+    flag = Image.open('./img/America.png').convert('RGBA')
+    im = np.array(flag)
+    imcolor = im
+    # Replace White with Black and the background with White for Word Cloud
+    red, green, blue, alpha = im.T
+    white_areas = (red == 255) & (green == 255) & (blue == 255)
+    null_areas = (red == 0) & (green == 0) & (blue == 0) & (alpha == 0)
+    im[..., :-1][white_areas.T] = (255, 0, 0)
+    im[..., :-1][null_areas.T] = (255, 255, 255)
+    immask = im
+    Image.fromarray(im).save('./imgAmerica-shifted.png')
+    varlist = load_varlist('./variables.json')
+    text = ''
+    for var in tqdm(varlist.keys()):
+        text += varlist[var][u'concept']
+    stopwords = STOPWORDS.copy()
+    stopwords.add("months")
+    stopwords.add("year")
+    stopwords.add("years")
+    stopwords.add("past")
+    wordcloud = WordCloud(background_color="white", width=2560, height=1440, scale=1, stopwords=stopwords, mask=immask).generate(text)
+    image_colors = ImageColorGenerator(imcolor)
+    plt.figure(figsize=(20,10))
+    plt.imshow(wordcloud.recolor(color_func=image_colors))
+    plt.axis("off")
+    plt.savefig('./img/word_cloud.png', dpi=500)

@@ -1,0 +1,124 @@
+
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Synced Small Multiples</title>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.css" />
+    <!--[if lte IE 8]>
+        <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.ie.css" />
+    <![endif]-->
+    <style type="text/css">
+        html, body { width: 100%; height: 100%; margin: 0; }
+        #map1, #map2 { width: 49.5%; height: 100%; }
+        #map1 { float: left; }
+        #map2 { float: right; }
+    </style>
+</head>
+
+<body>
+    <div id="map1"></div>
+    <div id="map2"></div>
+    <script src="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.js"></script>
+    <script src="http://d3js.org/topojson.v1.min.js"></script>
+    <script src="../js/corslite.js"></script>
+    <script src="../geojson-vt/geojson-vt.js"></script>
+    <script type="text/javascript">
+
+    function initFeatures(data) {
+      var counter = 0;
+      for (var i = 0; i < data.features.length; i++) {
+          data.features[i].properties.color = data.features[i].properties.r > 70 ? 'rgba(' + Math.round(255 * (data.features[i].properties.r - 60) / 40) + ', ' + Math.round(30 * (data.features[i].properties.r - 60) / 40) + ', 0, 1)' : 'rgba(0,0,0,0.0)';
+          data.features[i].properties.inview = 1;
+          counter += data.features[i].geometry.coordinates[0].length;
+      }
+      return counter;
+    }
+
+    var layer1 = L.tileLayer('http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png');
+
+    var layer2 = L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png');
+
+    var canvas = L.tileLayer.canvas();
+    var tileIndex;
+    var options = {maxZoom: 12, baseZoom: 18, maxPoints: 100, debug: 1};
+    corslite('../tracts/gz_2010_01_140_00_500k.zip.topojson', function(err, resp) {
+      data = JSON.parse(resp.response);
+      if (JSON.parse(resp.response).type === 'Topology') {
+                var firstKey = Object.keys(data.objects)[0];
+                data = topojson.feature(data, data.objects[firstKey]);
+            };
+      initFeatures(data);
+      tileIndex = geojsonvt(data, options);
+      // var chartdata = [];
+      canvas.drawTile = function(canvas, tilePoint, zoom) {
+        var ctx = canvas.getContext('2d');
+        var tile = tileIndex.getTile(zoom, tilePoint.x, tilePoint.y);
+        if(!tile) return;
+        ctx.lineWidth = 0.01;
+        var features = tile.features;
+        for (var i = 0; i < features.length; i++) {
+          var feature = features[i], 
+            typeChanged = type !== feature.type,
+            type = feature.type;
+          ctx.fillStyle = feature.tags.color ? feature.tags.color : 'rgba(255,0,0,0.05)';
+          ctx.beginPath();
+          for (var j = 0; j < feature.geometry.length; j++) {
+            var ring = feature.geometry[j];
+            for (var k = 0; k < ring.length; k++) {
+              var p = ring[k];
+              if (k) ctx.lineTo(p[0] / 16.0, p[1] / 16.0);
+              else ctx.moveTo(p[0] / 16.0, p[1] / 16.0);
+            }
+          }
+          if (type === 3) ctx.fill('evenodd');
+          ctx.stroke();
+        }
+      };
+
+    var map1 = L.map('map1', {
+        layers: [layer1, canvas],
+        // layers: [layer1],
+        center: [37.8, -96],
+        zoom: 4
+    });
+
+    map1.attributionControl.setPrefix('');
+
+    var map2 = L.map('map2', {
+        layers: [layer2],
+        center: [37.8, -96],
+        zoom: 4,
+        zoomControl: false
+    });
+
+    map1.on('moveend', follow).on('zoomend', follow);
+    map2.on('moveend', follow).on('zoomend', follow);
+
+    // quiet is a cheap and dirty way of avoiding a problem in which one map
+    // syncing to another leads to the other map syncing to it, and so on
+    // ad infinitum. this says that while we are calling sync, do not try to 
+    // loop again and sync other maps
+    var quiet = false;
+    function follow(e) {
+        if (quiet) return;
+        quiet = true;
+        if (e.target === map1) sync(map2, e);
+        if (e.target === map2) sync(map1, e);
+        quiet = false;
+    }
+
+    // sync simply steals the settings from the moved map (e.target)
+    // and applies them to the other map.
+    function sync(map, e) {
+        map.setView(e.target.getCenter(), e.target.getZoom(), {
+            animate: false,
+            reset: true
+        });
+}
+
+    }, true);
+
+    </script>
+</body>
+</html>
