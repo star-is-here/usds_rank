@@ -651,6 +651,63 @@ div#notebook {
 </div>
 
 </div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Drawing-a-Word-Cloud-for-ACS">Drawing a Word Cloud for ACS<a class="anchor-link" href="#Drawing-a-Word-Cloud-for-ACS">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We use the wordcloud package in Python to generate a wordcloud from the descriptions in ACS Variable Inventory. Using the original image, we color shift the white to another color and then overlay a color mask to get the final image.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">flag</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s">&#39;./img/America.png&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s">&#39;RGBA&#39;</span><span class="p">)</span>
+<span class="n">im</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">flag</span><span class="p">)</span>
+<span class="n">imcolor</span> <span class="o">=</span> <span class="n">im</span>
+<span class="c"># Replace White with Black and the background with White for Word Cloud</span>
+<span class="n">red</span><span class="p">,</span> <span class="n">green</span><span class="p">,</span> <span class="n">blue</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">T</span>
+<span class="n">white_areas</span> <span class="o">=</span> <span class="p">(</span><span class="n">red</span> <span class="o">==</span> <span class="mi">255</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">green</span> <span class="o">==</span> <span class="mi">255</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">blue</span> <span class="o">==</span> <span class="mi">255</span><span class="p">)</span>
+<span class="n">null_areas</span> <span class="o">=</span> <span class="p">(</span><span class="n">red</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">green</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">blue</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">alpha</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">im</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">white_areas</span><span class="o">.</span><span class="n">T</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">im</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">null_areas</span><span class="o">.</span><span class="n">T</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span>
+<span class="n">immask</span> <span class="o">=</span> <span class="n">im</span>
+<span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span><span class="n">im</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">&#39;./img/America-shifted.png&#39;</span><span class="p">)</span>
+<span class="n">varlist</span> <span class="o">=</span> <span class="n">load_varlist</span><span class="p">(</span><span class="s">&#39;./variables.json&#39;</span><span class="p">)</span>
+<span class="n">text</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+<span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">varlist</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+    <span class="n">text</span> <span class="o">+=</span> <span class="n">varlist</span><span class="p">[</span><span class="n">var</span><span class="p">][</span><span class="s">u&#39;concept&#39;</span><span class="p">]</span>
+<span class="n">stopwords</span> <span class="o">=</span> <span class="n">STOPWORDS</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">stopwords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&quot;months&quot;</span><span class="p">)</span>
+<span class="n">stopwords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&quot;year&quot;</span><span class="p">)</span>
+<span class="n">stopwords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&quot;years&quot;</span><span class="p">)</span>
+<span class="n">stopwords</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&quot;past&quot;</span><span class="p">)</span>
+<span class="n">wordcloud</span> <span class="o">=</span> <span class="n">WordCloud</span><span class="p">(</span><span class="n">background_color</span><span class="o">=</span><span class="s">&quot;white&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">2560</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">1440</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">stopwords</span><span class="o">=</span><span class="n">stopwords</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">immask</span><span class="p">)</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<span class="n">image_colors</span> <span class="o">=</span> <span class="n">ImageColorGenerator</span><span class="p">(</span><span class="n">imcolor</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">wordcloud</span><span class="o">.</span><span class="n">recolor</span><span class="p">(</span><span class="n">color_func</span><span class="o">=</span><span class="n">image_colors</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s">&quot;off&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s">&#39;./img/word_cloud.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
     </div>
   </div>
 </body>
