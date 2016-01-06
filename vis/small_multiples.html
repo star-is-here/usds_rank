@@ -10,90 +10,140 @@
     <![endif]-->
     <style type="text/css">
         html, body { width: 100%; height: 100%; margin: 0; }
-        #map1, #map2 { width: 49.5%; height: 100%; }
-        #map1 { float: left; }
-        #map2 { float: right; }
+        #map1, #map2, #map3, #map4 { width: 49.5%; height: 49.5%; }
+        #map1 { position: absolute; left: 0; top: 0; }
+        #map2 { position: absolute; right: 0%; top: 0; }
+        #map3 { position: absolute; left: 0; bottom: 0%; }
+        #map4 { position: absolute; right: 0%; bottom: 0%; }
     </style>
 </head>
 
 <body>
     <div id="map1"></div>
     <div id="map2"></div>
+    <div id="map3"></div>
+    <div id="map4"></div>
     <script src="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.js"></script>
-    <script src="http://d3js.org/topojson.v1.min.js"></script>
-    <script src="../js/corslite.js"></script>
-    <script src="../geojson-vt/geojson-vt.js"></script>
+    <script src='//api.tiles.mapbox.com/mapbox.js/plugins/leaflet-omnivore/v0.2.0/leaflet-omnivore.min.js'></script>
     <script type="text/javascript">
 
-    function initFeatures(data) {
-      var counter = 0;
-      for (var i = 0; i < data.features.length; i++) {
-          data.features[i].properties.color = data.features[i].properties.r > 70 ? 'rgba(' + Math.round(255 * (data.features[i].properties.r - 60) / 40) + ', ' + Math.round(30 * (data.features[i].properties.r - 60) / 40) + ', 0, 1)' : 'rgba(0,0,0,0.0)';
-          data.features[i].properties.inview = 1;
-          counter += data.features[i].geometry.coordinates[0].length;
-      }
-      return counter;
-    }
-
     var layer1 = L.tileLayer('http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png');
-
     var layer2 = L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png');
-
-    var canvas = L.tileLayer.canvas();
-    var tileIndex;
-    var options = {maxZoom: 12, baseZoom: 18, maxPoints: 100, debug: 1};
-    corslite('../tracts/gz_2010_01_140_00_500k.zip.topojson', function(err, resp) {
-      data = JSON.parse(resp.response);
-      if (JSON.parse(resp.response).type === 'Topology') {
-                var firstKey = Object.keys(data.objects)[0];
-                data = topojson.feature(data, data.objects[firstKey]);
-            };
-      initFeatures(data);
-      tileIndex = geojsonvt(data, options);
-      // var chartdata = [];
-      canvas.drawTile = function(canvas, tilePoint, zoom) {
-        var ctx = canvas.getContext('2d');
-        var tile = tileIndex.getTile(zoom, tilePoint.x, tilePoint.y);
-        if(!tile) return;
-        ctx.lineWidth = 0.01;
-        var features = tile.features;
-        for (var i = 0; i < features.length; i++) {
-          var feature = features[i], 
-            typeChanged = type !== feature.type,
-            type = feature.type;
-          ctx.fillStyle = feature.tags.color ? feature.tags.color : 'rgba(255,0,0,0.05)';
-          ctx.beginPath();
-          for (var j = 0; j < feature.geometry.length; j++) {
-            var ring = feature.geometry[j];
-            for (var k = 0; k < ring.length; k++) {
-              var p = ring[k];
-              if (k) ctx.lineTo(p[0] / 16.0, p[1] / 16.0);
-              else ctx.moveTo(p[0] / 16.0, p[1] / 16.0);
-            }
-          }
-          if (type === 3) ctx.fill('evenodd');
-          ctx.stroke();
-        }
-      };
+    var layer3 = L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png');
+    var layer4 = L.tileLayer('http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png');
 
     var map1 = L.map('map1', {
-        layers: [layer1, canvas],
-        // layers: [layer1],
-        center: [37.8, -96],
-        zoom: 4
+        // layers: [layer1, json],
+        layers: [layer1],
+        center: [32.7990,-86.8073],
+        zoom: 6
     });
 
     map1.attributionControl.setPrefix('');
 
     var map2 = L.map('map2', {
         layers: [layer2],
-        center: [37.8, -96],
-        zoom: 4,
+        center: [32.7990,-86.8073],
+        zoom: 6,
         zoomControl: false
     });
 
+    map2.attributionControl.setPrefix('');
+
+    var map3 = L.map('map3', {
+        layers: [layer3],
+        center: [32.7990,-86.8073],
+        zoom: 6,
+        zoomControl: false
+    });
+
+    map3.attributionControl.setPrefix('');
+
+    var map4 = L.map('map4', {
+        layers: [layer4],
+        center: [32.7990,-86.8073],
+        zoom: 6,
+        zoomControl: false
+    });
+
+    var stateLayer1 = L.geoJson(null, {
+      filter: function(feature, layer){
+        return feature.properties.sB01001e27 > 80 ? true : false;
+      },
+      style: function(feature, layer){
+        return { 
+          fillColor: feature.properties.sB01001e27 > 80 ? 'rgba(' 
+            + Math.round(46 * (feature.properties.sB01001e27 - 60) / 20) + ', ' 
+            + Math.round(204 * (feature.properties.sB01001e27 - 60) / 20) + ', ' 
+            + Math.round(113 * (feature.properties.sB01001e27 - 60) / 20) + ', 1)' : 'rgba(0,0,0,0.0)',
+          color: 'rgb(46,204,113)',
+          opacity: .5,
+          weight: 2,
+          fillOpacity: 1
+         };
+      }
+    });
+
+    var stateLayer2 = L.geoJson(null, {
+      filter: function(feature, layer){
+        return feature.properties.sB07001e17 > 80 ? true : false;
+      },
+      style: function(feature, layer){
+        return { 
+          fillColor: feature.properties.sB07001e17 > 80 ? 'rgba(' 
+            + Math.round(142 * (feature.properties.sB07001e17 - 60) / 20) + ', ' 
+            + Math.round(68 * (feature.properties.sB07001e17 - 60) / 20) + ', ' 
+            + Math.round(173 * (feature.properties.sB07001e17 - 60) / 20) + ', 1)' : 'rgba(0,0,0,0.0)',
+          color: 'rgb(142,68,173)',
+          opacity: .5,
+          weight: 2,
+          fillOpacity: 1
+         };
+      }
+    });
+
+    var stateLayer3 = L.geoJson(null, {
+      filter: function(feature, layer){
+        return feature.properties.sB22002e2 > 80 ? true : false;
+      },
+      style: function(feature, layer){
+        return { 
+          fillColor: feature.properties.sB22002e2 > 80 ? 'rgba(' 
+            + Math.round(41 * (feature.properties.sB22002e2 - 60) / 20) + ', ' 
+            + Math.round(128 * (feature.properties.sB22002e2 - 60) / 20) + ', ' 
+            + Math.round(185 * (feature.properties.sB22002e2 - 60) / 20) + ', 1)' : 'rgba(0,0,0,0.0)',
+          color: 'rgb(52,152,219)',
+          opacity: .5,
+          weight: 2,
+          fillOpacity: 1
+         };
+      }
+    });
+
+    var stateLayer4 = L.geoJson(null, {
+      filter: function(feature, layer){
+        return feature.properties.f > 10 ? true : false;
+      },
+      style: function(feature, layer){
+        return { 
+          fillColor: feature.properties.f > 10 ? 'rgba(241, 204, 113, 1)' : 'rgba(0,0,0,0.0)',
+          color: 'rgb(241,204,113)',
+          opacity: .5,
+          weight: 2,
+          fillOpacity: 1
+         };
+      }
+    });
+    omnivore.topojson('../tracts/gz_2010_01_140_00_500k.zip.topojson', null, stateLayer1).addTo(map1);
+    omnivore.topojson('../tracts/gz_2010_01_140_00_500k.zip.topojson', null, stateLayer2).addTo(map2);
+    omnivore.topojson('../tracts/gz_2010_01_140_00_500k.zip.topojson', null, stateLayer3).addTo(map3);
+    omnivore.topojson('../tracts/gz_2010_01_140_00_500k.zip.topojson', null, stateLayer4).addTo(map4);
+
+    // Sync maps using https://www.mapbox.com/mapbox.js/example/v1.0.0/sync-layer-movement/ tutorial
     map1.on('moveend', follow).on('zoomend', follow);
     map2.on('moveend', follow).on('zoomend', follow);
+    map3.on('moveend', follow).on('zoomend', follow);
+    map4.on('moveend', follow).on('zoomend', follow);
 
     // quiet is a cheap and dirty way of avoiding a problem in which one map
     // syncing to another leads to the other map syncing to it, and so on
@@ -103,8 +153,10 @@
     function follow(e) {
         if (quiet) return;
         quiet = true;
-        if (e.target === map1) sync(map2, e);
-        if (e.target === map2) sync(map1, e);
+        if (e.target === map1) { sync(map2, e); sync(map3, e); sync(map4, e); }
+        if (e.target === map2) { sync(map1, e); sync(map3, e); sync(map4, e); }
+        if (e.target === map3) { sync(map1, e); sync(map2, e); sync(map4, e); }
+        if (e.target === map4) { sync(map1, e); sync(map2, e); sync(map3, e); }
         quiet = false;
     }
 
@@ -115,9 +167,7 @@
             animate: false,
             reset: true
         });
-}
-
-    }, true);
+    }
 
     </script>
 </body>

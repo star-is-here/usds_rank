@@ -14,3 +14,9 @@
 *.shx
 *.xml
 *.geojson
+tutorial_code/
+tab4/
+*.ipynb
+geojson-vt/
+geojson-vt-topo/
+2013_5yr_SAS/

@@ -98,43 +98,6 @@ def load_varlist(fname):
             varlist[corrected] = varlist.pop(varname)
     return varlist
 
-# def build_custom(varlist, score):
-#     print '*****************************************************************************************************************************'
-#     print 'Building Custom List:'
-#     print '*****************************************************************************************************************************'
-#     directory = build_directory('./acs_sas/')
-#     custom = {}
-#     header = []
-#     for var in tqdm(varlist):
-#         header.extend([var])
-#         if var in score:
-#             header.extend(['score_' + var])
-#         for table in directory[var]:
-#             typ = table[0]
-#             st_nm = table[1]
-#             seq_nm = table[2]
-#             acs_summary = extract_acs_sum('./acs_summ/' + typ + '20135' + st_nm + seq_nm + '000.txt')
-#             position = [ i for i,x in enumerate(acs_summary[0]) if x == var ]
-#             if var in score:
-#                 scoreme = [ x[position[0]] for x in acs_summary[1:] ]
-#                 scored = [ stats.percentileofscore(scoreme, x) for x in scoreme ]
-#             for i, row in enumerate(acs_summary[1:]):
-#                 try:
-#                     custom[row[-1]].extend([row[position[0]]])
-#                 except KeyError:
-#                     custom[row[-1]] = [row[position[0]]]
-#                 if var in score:
-#                     custom[row[-1]].extend([scored[i]])
-#     position = [ i for i,x in enumerate(header) if 'score' in x ]
-#     for tract in custom.keys():
-#         avg = sum([ float(custom[tract][x]) for x in position ])/len(position)
-#         custom[tract].extend([avg])
-#     header.extend(['final_score'])
-#     custom['varnames'] = header
-#     with open('./custom.json', 'wb') as f:
-#         json.dump(custom, f)
-#     return custom
-
 def build_custom_json(varlist, score, force=False):
     with open('header.json') as f:
         existing_score = json.load(f).keys()
@@ -195,7 +158,6 @@ if __name__=='__main__':
     compl_list = []
     for complaint in tqdm(complaints[1:]):
         compl_list.append(complaint[9])
-
     print '*****************************************************************************************************************************'
     print 'Counting Complaints:'
     print '*****************************************************************************************************************************'
@@ -208,10 +170,10 @@ if __name__=='__main__':
                 compl_cnt[zips] += 1
             else:
                 compl_cnt[zips] = 1
-
     print '*****************************************************************************************************************************'
     print 'Migrating to Census Tract:'
     print '*****************************************************************************************************************************'
+    # Get percentage to apportion from zip to tract
     ziptract = [ [(x[0],x[4]),float(x[18])/100] for x in loadinput('./zcta_tract_rel_10.txt', 'csv')[1:] ]
     for i, row in tqdm(enumerate(ziptract)):
         zipcode = row[0][0]
@@ -219,18 +181,21 @@ if __name__=='__main__':
             ziptract[i].append(row[1]*compl_cnt[zipcode])
         else:
             ziptract[i].append(0)
-
     print '*****************************************************************************************************************************'
-    print 'Counting Census Tract:'
+    print 'Ranking Census Tracts by Complaints:'
     print '*****************************************************************************************************************************'
     compl_append = {}
     for row in tqdm(ziptract):
         tract = row[0][1]
+        count = round(row[2],0)
         if compl_append.has_key(tract) == False:
-            compl_append[tract] = [row[2], 1]
+            compl_append[tract] = count
         else:
-            compl_append[tract][0] += row[2]
-            compl_append[tract][1] += 1
+            compl_append[tract] += count
+    compl_cnt = [ compl_append[tract] for tract in compl_append.keys() ]
+    compl_dist = [ {'value':x, 'count':compl_cnt.count(x)} for x in set(compl_cnt) ]
+    with open('./vis/dist.json', 'wb') as f:
+        json.dump(compl_dist, f)
     ########################################################################################################################################
     # ACS 5-year summary files
     ########################################################################################################################################
@@ -306,7 +271,6 @@ if __name__=='__main__':
                         ####################################################################################################################
                         tract = feat['properties']['GEO_ID'][9:]
                         try:
-                            # feat['properties']['g'] = feat['properties']['GEO_ID']
                             feat['properties']['g'] = custom[tract]['gname']                           
                             for popme in [u'NAME', u'LSAD', u'STATE', u'COUNTY', u'TRACT', u'CENSUSAREA', u'GEO_ID']:
                                 feat['properties'].pop(popme)
@@ -314,12 +278,10 @@ if __name__=='__main__':
                                 feat['properties']['s'+rank] = custom[tract]['score_'+rank]
                             feat['properties']['r'] = custom[tract]['final_score']
                             try:
-                                feat['properties']['f'] = round(compl_append[tract][0],0)
+                                feat['properties']['f'] = round(compl_append[tract],0)
                             except KeyError:
                                 feat['properties']['f'] = 0
                             features.append(feat)
-                            for rank in variables:
-                                feat['properties'].pop('s'+rank)
                             us_features.append(feat)
                         except KeyError:
                             empty_tracts.append(tract)
@@ -330,12 +292,22 @@ if __name__=='__main__':
                 with open('./tracts/%s.geojson'%f, 'wb') as fl:
                     json.dump(rank_map, fl)
                 os.system("topojson -p -o ./tracts/%s.topojson ./tracts/%s.geojson"%(f,f))
+    print '*****************************************************************************************************************************'
+    print "Removing excess for national map"
+    print '*****************************************************************************************************************************'
+    print 'Original size: %5d'%len(us_features)
+    for feat in tqdm(us_features):
+        for rank in variables:
+            feat['properties'].pop('s'+rank)
+        if feat['properties']['r'] < 70 or feat['properties']['f'] < 10:
+            us_features.remove(feat)
     rank_map = {
         'type':'FeatureCollection',
         'features':us_features,
         'crs':{'init': u'epsg:4269'}}
     with open('./tracts/us_all_tracts.geojson', 'wb') as f:
         json.dump(rank_map, f)
+    print 'Reduced size: %5d'%len(us_features)
     print '*****************************************************************************************************************************'
     print 'Empty Tracts:'
     print '*****************************************************************************************************************************'
@@ -357,7 +329,7 @@ if __name__=='__main__':
     im[..., :-1][white_areas.T] = (255, 0, 0)
     im[..., :-1][null_areas.T] = (255, 255, 255)
     immask = im
-    Image.fromarray(im).save('./imgAmerica-shifted.png')
+    Image.fromarray(im).save('./img/America-shifted.png')
     varlist = load_varlist('./variables.json')
     text = ''
     for var in tqdm(varlist.keys()):
