@@ -179,7 +179,7 @@ corslite('../tracts/us_all_tracts.topojson', function(err, resp) {
   series.addEventHandler("mouseover", function (e){
     // Draw the text information in the bottom right corner
     svg.selectAll(".dimple-hover-text")
-      .data(["Need: " + d3.format(",.f")(e.colorValue)])
+      .data(["Average Percentile Rank: " + d3.format(",.f")(e.colorValue)])
         .enter()
         .append("text")
         .attr("class", "dimple-hover-text")
