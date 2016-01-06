@@ -1,19 +1,11 @@
 ## Commerce Data Usability Project
-####VIIRS Nighttime Imagery: Part 1 -- Data Processing
+####Parsing the American Community Survey
 ######Co-Leads: Star Ying (Data Scientist), Jeff Chen (Chief Data Scientist) 
 
 ####> intro
-Everyday, the VIIRS instrument on the Suomi NPP Satellite mission collects near visible infrared imagery along a Polar orbit. The utility of the data is boundless. Using nighttime imagery, there are potential applications for tracking/quantifing various aspects of life around the globe, from economy to energy use. The key, however, is to process various publicly available data sources into a format that can be 'mashed up'.
+The American Community Survey (ACS), the single largest survey conducted by the United States Census Bureau besides the Decennial Census, is designed to provide insight into various aspects of the American experience. The public summary files contain some 20,000+ estimates ranging from the breakdown of the language spoken to how long is the average commute is. It provides unprecendented insight into the changing face of the American landscape and is used by non-profits, corporations, and other government entities to further their missions. Below, the Commerce Data Service shows how to take advantage of this vast wealth of public data by merging it with Consumer Complaint Database and highlighting specific areas of need.
 
 ####> objective
-Using various pattern detection methods, train and evaluate models against hundreds of county-level, monthly-level statistics to assess the feasibility of monitoring key metrics for near real-time tracking.
+Use various methods to merge, extract and reshape the bulk release of ACS 5-year estimates
 
-####> milestones
-- **November 2015**: 
-  - Initial data collection using VIIRS monthly composites, discussions with NOAA
-  - Collection of multiple county level data sources from the Census Bureau, Bureau of Labor Statistics, Energy Information Administration
-- **December 2015**:
-  - Reveal first findings, discussions on production possibilities, tutorials
-  - Publish R and Python code for data processing
-  - Publish R and Python code for scoring models
 
