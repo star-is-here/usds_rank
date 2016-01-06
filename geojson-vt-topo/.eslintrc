@@ -1,6 +1,0 @@
-{
-  "extends": "mourner",
-  "globals": {
-    "topojson": true
-  }
-}
