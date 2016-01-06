@@ -151,171 +151,171 @@ if __name__=='__main__':
     # CFPB Complaints Database
     # ZCTA to Tract Relationship file here: http://www2.census.gov/geo/docs/maps-data/data/rel/zcta_tract_rel_10.txt
     ########################################################################################################################################
-    print '*****************************************************************************************************************************'
-    print 'Loading Complaints:'
-    print '*****************************************************************************************************************************'
-    complaints = loadinput('./Consumer_Complaints.csv','csv')
-    compl_list = []
-    for complaint in tqdm(complaints[1:]):
-        compl_list.append(complaint[9])
-    print '*****************************************************************************************************************************'
-    print 'Counting Complaints:'
-    print '*****************************************************************************************************************************'
-    compl_cnt = {}
-    # This Craps out for some reason
-    # compl_cnt = {x:compl_list.count(x) for x in compl_list}
-    for zips in tqdm(compl_list):
-        if 'X' not in zips:
-            if compl_cnt.has_key(zips):
-                compl_cnt[zips] += 1
-            else:
-                compl_cnt[zips] = 1
-    print '*****************************************************************************************************************************'
-    print 'Migrating to Census Tract:'
-    print '*****************************************************************************************************************************'
-    # Get percentage to apportion from zip to tract
-    ziptract = [ [(x[0],x[4]),float(x[18])/100] for x in loadinput('./zcta_tract_rel_10.txt', 'csv')[1:] ]
-    for i, row in tqdm(enumerate(ziptract)):
-        zipcode = row[0][0]
-        if compl_cnt.has_key(zipcode):
-            ziptract[i].append(row[1]*compl_cnt[zipcode])
-        else:
-            ziptract[i].append(0)
-    print '*****************************************************************************************************************************'
-    print 'Ranking Census Tracts by Complaints:'
-    print '*****************************************************************************************************************************'
-    compl_append = {}
-    for row in tqdm(ziptract):
-        tract = row[0][1]
-        count = round(row[2],0)
-        if compl_append.has_key(tract) == False:
-            compl_append[tract] = count
-        else:
-            compl_append[tract] += count
-    compl_cnt = [ compl_append[tract] for tract in compl_append.keys() ]
-    compl_dist = [ {'value':x, 'count':compl_cnt.count(x)} for x in set(compl_cnt) ]
-    with open('./vis/dist.json', 'wb') as f:
-        json.dump(compl_dist, f)
-    ########################################################################################################################################
-    # ACS 5-year summary files
-    ########################################################################################################################################
-    # Variable JSON
-    # http://api.census.gov/data/2014/acs5/variables.json
-    ########################################################################################################################################
-    # SAS Table generation code
-    # http://www2.census.gov/programs-surveys/acs/summary_file/2013/documentation/user_tools/2013_5yr_SAS.zip
-    ########################################################################################################################################
-    # Geography Codes
-    # http://www2.census.gov/programs-surveys/acs/summary_file/2013/data/5_year_entire_sf/2013_ACS_Geography_Files.zip
-    ########################################################################################################################################
-    # Tract level ACS 5-year estimates
-    # http://www2.census.gov/programs-surveys/acs/summary_file/2013/data/5_year_entire_sf/Tracts_Block_Groups_Only.tar.gz
-    ########################################################################################################################################
-    # Test pull
-    ########################################################################################################################################
-    # variables = ['B17001e2', 'B22002e2', 'B23025e7']
-    # scores = ['B17001e2', 'B22002e2', 'B23025e7']
-    ########################################################################################################################################
-    # Big pull
-    ########################################################################################################################################
-    # variables = ['B00001e1', 'B00002e1', 'B01001e2', 'B01001e26', 'B01001e27', 'B01001e28', 'B01001e29', 'B01001e30', 'B02001e1', 'B02001e2', 'B02001e3', 'B02001e4', 'B02001e5', 'B02001e6', 'B02001e7', 'B02001e8', 'B02001e9', 'B02001e10', 'B17001e1', 'B17001e2', 'B18101e1', 'B18105e1', 'B21100e1', 'B21100e2', 'B21100e3', 'B22001e1', 'B22001e2', 'B22001e3', 'B22001e4', 'B22002e1', 'B22002e2', 'B22002e3', 'B22002e4', 'B22002e5', 'B22002e6', 'B22002e7', 'B22002e8', 'B22002e9', 'B22002e10', 'B22002e11', 'B22002e12', 'B22002e13', 'B22002e14', 'B23024e1', 'B23024e2', 'B23024e3', 'B23024e4', 'B23024e5', 'B23024e6', 'B23024e7', 'B23024e8', 'B23024e9', 'B23025e1', 'B23025e5', 'B23025e7']
-    # scores = ['B17001e2', 'B22002e2', 'B23025e7']
-    ########################################################################################################################################
-    # Tutorial pull
-    ########################################################################################################################################
-    # Girls under 5, Same house 1 year ago, SNAP benefits the past year
-    # Merge against Financial Complaints @ http://www.consumerfinance.gov/complaintdatabase/
-    ########################################################################################################################################
-    variables = ['B01001e27', 'B07001e17', 'B22002e2']
-    scores = variables
-    varlist = load_varlist('./variables.json')
-    header = { x: varlist[x] for x in variables }
-    with open('./header.json', 'wb') as f:
-        json.dump(header, f)
-    print '*****************************************************************************************************************************'
-    print 'Pulling the following:'
-    print '*****************************************************************************************************************************'    
-    pp.pprint(header)
-    scored = { x: varlist[x] for x in scores }
-    with open('./scored.json', 'wb') as f:
-        json.dump(scored, f)
-    print '*****************************************************************************************************************************'
-    print 'Scoring the following:'
-    print '*****************************************************************************************************************************'
-    pp.pprint(scored)
-    custom = build_custom_json(variables, scores)
-    ########################################################################################################################################
-    # Building a national tract level geojson
-    # Different vintages from https://www.census.gov/geo/maps-data/data/cbf/cbf_tracts.html
-    # We use 2010 decennial vintage
-    ########################################################################################################################################
-    rootdir = './tracts/'
-    us_features = []
-    empty_tracts = []
-    for subdir, dirs, files in os.walk(rootdir):
-        for f in tqdm(files):
-            ################################################################################################################################
-            # Process only compressed files
-            ################################################################################################################################
-            if f[-3:] == 'zip':
-                features = []
-                ############################################################################################################################
-                # Census provides single layer tract shapefile so we take the first
-                ############################################################################################################################
-                with fiona.open('/', vfs='zip://'+os.path.join(subdir, f), layer=0) as src:
-                    for feat in src:
-                        feat['properties']['x'] = round(asShape(feat['geometry']).centroid.x,4)
-                        feat['properties']['y'] = round(asShape(feat['geometry']).centroid.y,4)
-                        ####################################################################################################################
-                        # Toss out extra data to save space
-                        ####################################################################################################################
-                        tract = feat['properties']['GEO_ID'][9:]
-                        try:
-                            feat['properties']['g'] = custom[tract]['gname']                           
-                            for popme in [u'NAME', u'LSAD', u'STATE', u'COUNTY', u'TRACT', u'CENSUSAREA', u'GEO_ID']:
-                                feat['properties'].pop(popme)
-                            for rank in variables:
-                                feat['properties']['s'+rank] = custom[tract]['score_'+rank]
-                            feat['properties']['r'] = custom[tract]['final_score']
-                            try:
-                                feat['properties']['f'] = round(compl_append[tract],0)
-                            except KeyError:
-                                feat['properties']['f'] = 0
-                            features.append(feat)
-                            us_features.append(feat)
-                        except KeyError:
-                            empty_tracts.append(tract)
-                rank_map = {
-                    'type':'FeatureCollection',
-                    'features':features,
-                    'crs':{'init': u'epsg:4269'}}
-                with open('./tracts/%s.geojson'%f, 'wb') as fl:
-                    json.dump(rank_map, fl)
-                os.system("topojson -p -o ./tracts/%s.topojson ./tracts/%s.geojson"%(f,f))
-    print '*****************************************************************************************************************************'
-    print "Removing excess for national map"
-    print '*****************************************************************************************************************************'
-    print 'Original size: %5d'%len(us_features)
-    for feat in tqdm(us_features):
-        for rank in variables:
-            feat['properties'].pop('s'+rank)
-        if feat['properties']['r'] < 70 or feat['properties']['f'] < 10:
-            us_features.remove(feat)
-    rank_map = {
-        'type':'FeatureCollection',
-        'features':us_features,
-        'crs':{'init': u'epsg:4269'}}
-    with open('./tracts/us_all_tracts.geojson', 'wb') as f:
-        json.dump(rank_map, f)
-    print 'Reduced size: %5d'%len(us_features)
-    print '*****************************************************************************************************************************'
-    print 'Empty Tracts:'
-    print '*****************************************************************************************************************************'
-    pp.pprint(empty_tracts)
-    print '*****************************************************************************************************************************'
-    print 'Converting GeoJSON to TopoJSON for space concerns'
-    print '*****************************************************************************************************************************'
-    os.system("topojson -p -o ./tracts/us_all_tracts.topojson ./tracts/us_all_tracts.geojson")
+    # print '*****************************************************************************************************************************'
+    # print 'Loading Complaints:'
+    # print '*****************************************************************************************************************************'
+    # complaints = loadinput('./Consumer_Complaints.csv','csv')
+    # compl_list = []
+    # for complaint in tqdm(complaints[1:]):
+    #     compl_list.append(complaint[9])
+    # print '*****************************************************************************************************************************'
+    # print 'Counting Complaints:'
+    # print '*****************************************************************************************************************************'
+    # compl_cnt = {}
+    # # This Craps out for some reason
+    # # compl_cnt = {x:compl_list.count(x) for x in compl_list}
+    # for zips in tqdm(compl_list):
+    #     if 'X' not in zips:
+    #         if compl_cnt.has_key(zips):
+    #             compl_cnt[zips] += 1
+    #         else:
+    #             compl_cnt[zips] = 1
+    # print '*****************************************************************************************************************************'
+    # print 'Migrating to Census Tract:'
+    # print '*****************************************************************************************************************************'
+    # # Get percentage to apportion from zip to tract
+    # ziptract = [ [(x[0],x[4]),float(x[18])/100] for x in loadinput('./zcta_tract_rel_10.txt', 'csv')[1:] ]
+    # for i, row in tqdm(enumerate(ziptract)):
+    #     zipcode = row[0][0]
+    #     if compl_cnt.has_key(zipcode):
+    #         ziptract[i].append(row[1]*compl_cnt[zipcode])
+    #     else:
+    #         ziptract[i].append(0)
+    # print '*****************************************************************************************************************************'
+    # print 'Ranking Census Tracts by Complaints:'
+    # print '*****************************************************************************************************************************'
+    # compl_append = {}
+    # for row in tqdm(ziptract):
+    #     tract = row[0][1]
+    #     count = round(row[2],0)
+    #     if compl_append.has_key(tract) == False:
+    #         compl_append[tract] = count
+    #     else:
+    #         compl_append[tract] += count
+    # compl_cnt = [ compl_append[tract] for tract in compl_append.keys() ]
+    # compl_dist = [ {'value':x, 'count':compl_cnt.count(x)} for x in set(compl_cnt) ]
+    # with open('./vis/dist.json', 'wb') as f:
+    #     json.dump(compl_dist, f)
+    # ########################################################################################################################################
+    # # ACS 5-year summary files
+    # ########################################################################################################################################
+    # # Variable JSON
+    # # http://api.census.gov/data/2014/acs5/variables.json
+    # ########################################################################################################################################
+    # # SAS Table generation code
+    # # http://www2.census.gov/programs-surveys/acs/summary_file/2013/documentation/user_tools/2013_5yr_SAS.zip
+    # ########################################################################################################################################
+    # # Geography Codes
+    # # http://www2.census.gov/programs-surveys/acs/summary_file/2013/data/5_year_entire_sf/2013_ACS_Geography_Files.zip
+    # ########################################################################################################################################
+    # # Tract level ACS 5-year estimates
+    # # http://www2.census.gov/programs-surveys/acs/summary_file/2013/data/5_year_entire_sf/Tracts_Block_Groups_Only.tar.gz
+    # ########################################################################################################################################
+    # # Test pull
+    # ########################################################################################################################################
+    # # variables = ['B17001e2', 'B22002e2', 'B23025e7']
+    # # scores = ['B17001e2', 'B22002e2', 'B23025e7']
+    # ########################################################################################################################################
+    # # Big pull
+    # ########################################################################################################################################
+    # # variables = ['B00001e1', 'B00002e1', 'B01001e2', 'B01001e26', 'B01001e27', 'B01001e28', 'B01001e29', 'B01001e30', 'B02001e1', 'B02001e2', 'B02001e3', 'B02001e4', 'B02001e5', 'B02001e6', 'B02001e7', 'B02001e8', 'B02001e9', 'B02001e10', 'B17001e1', 'B17001e2', 'B18101e1', 'B18105e1', 'B21100e1', 'B21100e2', 'B21100e3', 'B22001e1', 'B22001e2', 'B22001e3', 'B22001e4', 'B22002e1', 'B22002e2', 'B22002e3', 'B22002e4', 'B22002e5', 'B22002e6', 'B22002e7', 'B22002e8', 'B22002e9', 'B22002e10', 'B22002e11', 'B22002e12', 'B22002e13', 'B22002e14', 'B23024e1', 'B23024e2', 'B23024e3', 'B23024e4', 'B23024e5', 'B23024e6', 'B23024e7', 'B23024e8', 'B23024e9', 'B23025e1', 'B23025e5', 'B23025e7']
+    # # scores = ['B17001e2', 'B22002e2', 'B23025e7']
+    # ########################################################################################################################################
+    # # Tutorial pull
+    # ########################################################################################################################################
+    # # Girls under 5, Same house 1 year ago, SNAP benefits the past year
+    # # Merge against Financial Complaints @ http://www.consumerfinance.gov/complaintdatabase/
+    # ########################################################################################################################################
+    # variables = ['B01001e27', 'B07001e17', 'B22002e2']
+    # scores = variables
+    # varlist = load_varlist('./variables.json')
+    # header = { x: varlist[x] for x in variables }
+    # with open('./header.json', 'wb') as f:
+    #     json.dump(header, f)
+    # print '*****************************************************************************************************************************'
+    # print 'Pulling the following:'
+    # print '*****************************************************************************************************************************'    
+    # pp.pprint(header)
+    # scored = { x: varlist[x] for x in scores }
+    # with open('./scored.json', 'wb') as f:
+    #     json.dump(scored, f)
+    # print '*****************************************************************************************************************************'
+    # print 'Scoring the following:'
+    # print '*****************************************************************************************************************************'
+    # pp.pprint(scored)
+    # custom = build_custom_json(variables, scores)
+    # ########################################################################################################################################
+    # # Building a national tract level geojson
+    # # Different vintages from https://www.census.gov/geo/maps-data/data/cbf/cbf_tracts.html
+    # # We use 2010 decennial vintage
+    # ########################################################################################################################################
+    # rootdir = './tracts/'
+    # us_features = []
+    # empty_tracts = []
+    # for subdir, dirs, files in os.walk(rootdir):
+    #     for f in tqdm(files):
+    #         ################################################################################################################################
+    #         # Process only compressed files
+    #         ################################################################################################################################
+    #         if f[-3:] == 'zip':
+    #             features = []
+    #             ############################################################################################################################
+    #             # Census provides single layer tract shapefile so we take the first
+    #             ############################################################################################################################
+    #             with fiona.open('/', vfs='zip://'+os.path.join(subdir, f), layer=0) as src:
+    #                 for feat in src:
+    #                     feat['properties']['x'] = round(asShape(feat['geometry']).centroid.x,4)
+    #                     feat['properties']['y'] = round(asShape(feat['geometry']).centroid.y,4)
+    #                     ####################################################################################################################
+    #                     # Toss out extra data to save space
+    #                     ####################################################################################################################
+    #                     tract = feat['properties']['GEO_ID'][9:]
+    #                     try:
+    #                         feat['properties']['g'] = custom[tract]['gname']                           
+    #                         for popme in [u'NAME', u'LSAD', u'STATE', u'COUNTY', u'TRACT', u'CENSUSAREA', u'GEO_ID']:
+    #                             feat['properties'].pop(popme)
+    #                         for rank in variables:
+    #                             feat['properties']['s'+rank] = custom[tract]['score_'+rank]
+    #                         feat['properties']['r'] = custom[tract]['final_score']
+    #                         try:
+    #                             feat['properties']['f'] = round(compl_append[tract],0)
+    #                         except KeyError:
+    #                             feat['properties']['f'] = 0
+    #                         features.append(feat)
+    #                         us_features.append(feat)
+    #                     except KeyError:
+    #                         empty_tracts.append(tract)
+    #             rank_map = {
+    #                 'type':'FeatureCollection',
+    #                 'features':features,
+    #                 'crs':{'init': u'epsg:4269'}}
+    #             with open('./tracts/%s.geojson'%f, 'wb') as fl:
+    #                 json.dump(rank_map, fl)
+    #             os.system("topojson -p -o ./tracts/%s.topojson ./tracts/%s.geojson"%(f,f))
+    # print '*****************************************************************************************************************************'
+    # print "Removing excess for national map"
+    # print '*****************************************************************************************************************************'
+    # print 'Original size: %5d'%len(us_features)
+    # for feat in tqdm(us_features):
+    #     for rank in variables:
+    #         feat['properties'].pop('s'+rank)
+    #     if feat['properties']['r'] < 70 or feat['properties']['f'] < 10:
+    #         us_features.remove(feat)
+    # rank_map = {
+    #     'type':'FeatureCollection',
+    #     'features':us_features,
+    #     'crs':{'init': u'epsg:4269'}}
+    # with open('./tracts/us_all_tracts.geojson', 'wb') as f:
+    #     json.dump(rank_map, f)
+    # print 'Reduced size: %5d'%len(us_features)
+    # print '*****************************************************************************************************************************'
+    # print 'Empty Tracts:'
+    # print '*****************************************************************************************************************************'
+    # pp.pprint(empty_tracts)
+    # print '*****************************************************************************************************************************'
+    # print 'Converting GeoJSON to TopoJSON for space concerns'
+    # print '*****************************************************************************************************************************'
+    # os.system("topojson -p -o ./tracts/us_all_tracts.topojson ./tracts/us_all_tracts.geojson")
     print '*****************************************************************************************************************************'
     print 'Generating wordcloud'
     print '*****************************************************************************************************************************'
@@ -339,9 +339,9 @@ if __name__=='__main__':
     stopwords.add("year")
     stopwords.add("years")
     stopwords.add("past")
-    wordcloud = WordCloud(background_color="white", width=2560, height=1440, scale=1, stopwords=stopwords, mask=immask).generate(text)
+    wordcloud = WordCloud(background_color="white", width=1280, height=800, scale=1, stopwords=stopwords, mask=immask).generate(text)
     image_colors = ImageColorGenerator(imcolor)
     plt.figure(figsize=(20,10))
     plt.imshow(wordcloud.recolor(color_func=image_colors))
     plt.axis("off")
-    plt.savefig('./img/word_cloud.png', dpi=500)
+    plt.savefig('./img/word_cloud.png', dpi=100)
