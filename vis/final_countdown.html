@@ -149,8 +149,8 @@ corslite('../tracts/us_all_tracts.topojson', function(err, resp) {
     .style("text-anchor", "middle")
     .style("fill", "rgb(236, 240, 241)")
     .style("font-family", "Helvetica")
-    .style("font-size", "18px")
-    .style("font-weight", "bold")
+    .style("font-size", "12px")
+    // .style("font-weight", "bold")
     .text("Top Census Tracts with Girls under 5, who have lived in the same house,");
   svg.append("text")
     .attr("x", topten._xPixels() + topten._widthPixels() / 2)
@@ -158,8 +158,8 @@ corslite('../tracts/us_all_tracts.topojson', function(err, resp) {
     .style("text-anchor", "middle")
     .style("fill", "rgb(236, 240, 241)")
     .style("font-family", "Helvetica")
-    .style("font-size", "14px")
-    .style("font-weight", "bold")
+    .style("font-size", "12px")
+    // .style("font-weight", "bold")
     .text("and collected SNAP benefits over the last year and whose household have made financial complaints");
 
     var shape = d3.select(s),
