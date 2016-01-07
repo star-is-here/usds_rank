@@ -113,7 +113,6 @@ corslite('../tracts/us_all_tracts.topojson', function(err, resp) {
     .attr("width", "100%")
     .attr("height", "100%")
     .style("fill", "rgb(44, 62, 80)"); 
-  console.log(filterData(data));
   var topten = new dimple.chart(svg, filterData(data)),
     y = topten.addCategoryAxis("y", "Location"),
     x = topten.addMeasureAxis("x", "Need"),
@@ -126,6 +125,27 @@ corslite('../tracts/us_all_tracts.topojson', function(err, resp) {
   y.addOrderRule("Need");
   x.hidden = true;
   y.hidden = true;
+
+  svg.append("text")
+    .attr('id', 'title')
+    .attr("x", topten._xPixels() + topten._widthPixels() / 2)
+    .attr("y", topten._yPixels() - 20)
+    .style("text-anchor", "middle")
+    .style("fill", "rgb(236, 240, 241)")
+    .style("font-family", "Helvetica")
+    .style("font-size", "12px")
+    // .style("font-weight", "bold")
+    .text("Top Census Tracts with Girls under 5, who have lived in the same house,");
+  svg.append("text")
+    .attr('id', 'title')
+    .attr("x", topten._xPixels() + topten._widthPixels() / 2)
+    .attr("y", topten._yPixels() - 5)
+    .style("text-anchor", "middle")
+    .style("fill", "rgb(236, 240, 241)")
+    .style("font-family", "Helvetica")
+    .style("font-size", "12px")
+    // .style("font-weight", "bold")
+    .text("and collected SNAP benefits over the last year and whose household have made financial complaints");
 
   // topten.defaultColors = [
   //   new dimple.color("#E74C3C", "#2980b9", 1),
@@ -140,31 +160,26 @@ corslite('../tracts/us_all_tracts.topojson', function(err, resp) {
   //   new dimple.color("#BDC3C7", "#2980b9", 1),
   // ];
 
-  // Add location labels 
+  // Add location labels, taken from http://dimplejs.org/advanced_examples_viewer.html?id=advanced_custom_styling
   series.afterDraw = function (s, d) {
-
-  svg.append("text")
-    .attr("x", topten._xPixels() + topten._widthPixels() / 2)
-    .attr("y", topten._yPixels() - 20)
-    .style("text-anchor", "middle")
-    .style("fill", "rgb(236, 240, 241)")
-    .style("font-family", "Helvetica")
-    .style("font-size", "12px")
-    // .style("font-weight", "bold")
-    .text("Top Census Tracts with Girls under 5, who have lived in the same house,");
-  svg.append("text")
-    .attr("x", topten._xPixels() + topten._widthPixels() / 2)
-    .attr("y", topten._yPixels() - 5)
-    .style("text-anchor", "middle")
-    .style("fill", "rgb(236, 240, 241)")
-    .style("font-family", "Helvetica")
-    .style("font-size", "12px")
-    // .style("font-weight", "bold")
-    .text("and collected SNAP benefits over the last year and whose household have made financial complaints");
 
     var shape = d3.select(s),
       labels = svg.append('g');
+
+    console.log(shape);
+
+    svg.append("rect")
+      .attr("id", "shading")
+      .attr("x", shape.attr("x"))
+      .attr("y", shape.attr("y"))
+      .attr("height", (0.5 * shape.attr("height")) / 1.61803398875)
+      .attr("width", shape.attr("width"))
+      .style("fill", shape.attr("stroke"))
+      .style("opacity", 1)
+      .style("pointer-events", "none");
+
     labels.append("text")
+      .attr('id', 'label-location')
       .attr("x", shape.attr("width") > 325 ? parseFloat(shape.attr("x")) + 20 : parseFloat(shape.attr("x")) + parseFloat(shape.attr("width")) + 20)
       .attr("y", parseFloat(shape.attr("y")) + (shape.attr("height") / 2 + 8))
       .style("font-family", "helvetica")
@@ -229,7 +244,8 @@ corslite('../tracts/us_all_tracts.topojson', function(err, resp) {
     }
   };
   // Remove previous labels, update and redraw
-  svg.selectAll('text').remove();
+  svg.selectAll('#label-location').remove();
+  svg.selectAll('#shading').remove();
   topten.data = filterData(data);
   topten.draw(1000);
   });
